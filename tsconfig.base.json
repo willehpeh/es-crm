@@ -14,7 +14,16 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@angular-nest-starter/domain": ["packages/domain/src/index.ts"],
+      "@angular-nest-starter/application": [
+        "packages/application/src/index.ts"
+      ],
+      "@angular-nest-starter/infrastructure": [
+        "packages/infrastructure/src/index.ts"
+      ],
+      "@angular-nest-starter/testing": ["packages/testing/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
