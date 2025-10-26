@@ -1,27 +1,27 @@
 {
-  "name": "angular-nest-starter",
+  "name": "frontend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/angular-nest-starter/src",
+  "sourceRoot": "apps/frontend/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/angular-nest-starter",
-        "browser": "apps/angular-nest-starter/src/main.ts",
+        "outputPath": "dist/apps/frontend",
+        "browser": "apps/frontend/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/angular-nest-starter/tsconfig.app.json",
+        "tsConfig": "apps/frontend/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/angular-nest-starter/public"
+            "input": "apps/frontend/public"
           }
         ],
-        "styles": ["apps/angular-nest-starter/src/styles.scss"]
+        "styles": ["apps/frontend/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -52,10 +52,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "angular-nest-starter:build:production"
+          "buildTarget": "frontend:build:production"
         },
         "development": {
-          "buildTarget": "angular-nest-starter:build:development"
+          "buildTarget": "frontend:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -63,7 +63,7 @@
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
       "options": {
-        "buildTarget": "angular-nest-starter:build"
+        "buildTarget": "frontend:build"
       }
     },
     "lint": {
@@ -73,16 +73,16 @@
       "executor": "@nx/vite:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "reportsDirectory": "../../coverage/apps/angular-nest-starter"
+        "reportsDirectory": "../../coverage/apps/frontend"
       }
     },
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "angular-nest-starter:build",
+        "buildTarget": "frontend:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/angular-nest-starter/browser",
+        "staticFilePath": "dist/apps/frontend/browser",
         "spa": true
       }
     }
