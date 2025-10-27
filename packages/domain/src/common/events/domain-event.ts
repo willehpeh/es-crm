@@ -1,7 +1,7 @@
-export type DomainEvent<T> = {
+export type DomainEvent = {
   id: string;
   streamId: string;
-  payload: T;
+  payload: object;
   type: string;
   version: number;
   created: string;
