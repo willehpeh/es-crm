@@ -1,4 +1,4 @@
 export * from './value-objects';
-export * from './contact';
-export * from './contact.repository';
+export * from './entities';
+export * from './repositories';
 
