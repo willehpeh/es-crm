@@ -2,15 +2,16 @@
 
 ## Overview
 
-This is an Nx-managed monorepo implementing a full-stack application with Angular (frontend) and NestJS (backend). The architecture follows **Clean Architecture** principles combined with **CQRS (Command Query Responsibility Segregation)** patterns, with a planned migration path to **Event Sourcing**.
+This is an Nx-managed monorepo implementing a full-stack application with Angular (frontend) and NestJS (backend). The architecture follows **Clean Architecture** principles combined with **CQRS (Command Query Responsibility Segregation)** and **Event Sourcing** patterns.
 
 ### Core Principles
 
 1. **Clean Architecture**: Separation of concerns across Domain, Application, and Infrastructure layers
-2. **CQRS**: Commands for writes, Queries for reads, Events for side effects (using `@nestjs/cqrs`)
-3. **Test-Driven Development (TDD)**: Tests written first, primarily against the application layer
-4. **Enforced Boundaries**: Module dependency rules enforced via ESLint
-5. **State Management**: NGRX on frontend, CQRS on backend
+2. **CQRS**: Commands for writes, Queries for reads, Events for notifications (using `@nestjs/cqrs`)
+3. **Event Sourcing**: Events are the source of truth; state is derived by replaying events
+4. **Test-Driven Development (TDD)**: Tests written first, primarily against the application layer
+5. **Enforced Boundaries**: Module dependency rules enforced via ESLint
+6. **State Management**: NGRX on frontend, Event Sourcing on backend
 
 ---
 
@@ -792,53 +793,178 @@ Follow this workflow when adding a new feature:
 
 ---
 
-## Future: Event Sourcing
+## Event Sourcing Architecture
 
-This architecture is designed to evolve toward **Event Sourcing**, where state changes are stored as a sequence of events rather than current state snapshots.
+This project uses **Event Sourcing** as the persistence mechanism, where state changes are stored as a sequence of events rather than current state snapshots. Events are the source of truth; aggregate state is derived by replaying events.
 
-### Preparation for Event Sourcing
+### Key Concepts
 
-The current CQRS implementation already includes:
-- ✅ Events representing state changes
-- ✅ Event handlers for side effects
-- ✅ Separation of write (commands) and read (queries) models
+**Event Sourcing** means:
+- ✅ Events are the source of truth (persisted to event store)
+- ✅ Aggregate state is derived by replaying events
+- ✅ Complete audit trail of all changes
+- ✅ Time travel and debugging capabilities
+- ✅ Projections for read models
 
-### Migration Path
+### Core Components
 
-When ready to implement Event Sourcing:
+#### 1. Domain Events
 
-1. **Introduce Event Store**: Add persistent event storage (e.g., EventStoreDB, custom solution)
-2. **Event Versioning**: Implement event versioning strategy
-3. **Projections**: Create read models by replaying events
-4. **Snapshots**: Add snapshot mechanism for performance
-5. **Saga Updates**: Update sagas to work with event stream
-
-### Event Store Structure (Future)
+Domain events are immutable records of things that have happened. They contain only business data (payload), not infrastructure concerns.
 
 ```typescript
-// Future: Event store interface
-export interface IEventStore {
-  appendEvents(streamId: string, events: DomainEvent[]): Promise<void>;
-  getEvents(streamId: string): Promise<DomainEvent[]>;
-  getEventsSince(streamId: string, version: number): Promise<DomainEvent[]>;
-}
-
-// Future: Event-sourced aggregate
-export abstract class EventSourcedAggregate {
-  private uncommittedEvents: DomainEvent[] = [];
-
-  protected applyEvent(event: DomainEvent): void {
-    this.apply(event);
-    this.uncommittedEvents.push(event);
-  }
-
-  abstract apply(event: DomainEvent): void;
-
-  getUncommittedEvents(): DomainEvent[] {
-    return this.uncommittedEvents;
+// Domain aggregates raise pure events
+{
+  type: 'ContactRegistered',
+  payload: {
+    contactId: 'contact-123',
+    firstName: 'John',
+    lastName: 'Doe',
+    source: 'LinkedIn'
   }
 }
 ```
+
+#### 2. Aggregates
+
+Aggregates are event-sourced entities that:
+- Raise events when business operations occur
+- Apply events to update their internal state
+- Track uncommitted events for persistence
+- Maintain version for optimistic concurrency control
+
+```typescript
+// packages/domain/src/common/events/aggregate.ts
+export abstract class Aggregate {
+  private _version: number = 0;
+  private _uncommittedEvents: { type: string; payload: object }[] = [];
+
+  abstract apply(event: { type: string; payload: object }): void;
+
+  protected raise(event: { type: string; payload: object }): void {
+    this.apply(event);  // Update internal state
+    this._uncommittedEvents.push(event);  // Track for persistence
+  }
+
+  uncommittedEvents(): { type: string; payload: object }[] {
+    return this._uncommittedEvents;
+  }
+
+  baseVersion(): number {
+    return this._version;  // Version of last persisted state
+  }
+
+  markAllAsCommitted(): void {
+    this._version += this._uncommittedEvents.length;
+    this._uncommittedEvents = [];
+  }
+
+  protected loadFromHistory(events: DomainEvent[]): void {
+    events.forEach((event) => {
+      this.apply({ type: event.type, payload: event.payload });
+      this._version = event.version;
+    });
+  }
+}
+```
+
+#### 3. Event Enrichment
+
+Aggregates raise pure domain events. The repository enriches them with infrastructure fields before persistence:
+
+```typescript
+// Repository enriches events automatically
+async save(aggregate: Contact): Promise<void> {
+  const uncommittedEvents = aggregate.uncommittedEvents();
+
+  // Enrich with infrastructure fields (id, version, timestamps, userId, tenantId)
+  const enrichedEvents = this.enrichEvents(
+    uncommittedEvents,
+    aggregate.id.value(),
+    aggregate.baseVersion()
+  );
+
+  // Persist to event store
+  await this.eventStore.append(enrichedEvents);
+
+  aggregate.markAllAsCommitted();
+}
+```
+
+#### 4. Command Handler Pattern
+
+Command handlers orchestrate the workflow:
+
+```typescript
+@CommandHandler(RegisterContact)
+export class RegisterContactHandler implements ICommandHandler<RegisterContact> {
+  constructor(private readonly contacts: ContactRepository) {}
+
+  async execute(command: RegisterContact): Promise<ContactId> {
+    const contactId = new ContactId();
+
+    // Aggregate raises events
+    const contact = Contact.register(contactId, ...command.data);
+
+    // Repository enriches and persists events
+    await this.contacts.save(contact);
+
+    return contactId;
+  }
+}
+```
+
+### Repository Interface
+
+```typescript
+// packages/domain/src/repositories/contact.repository.ts
+export interface ContactRepository {
+  save(contact: Contact): Promise<void>;
+  load(id: ContactId): Promise<Contact>;
+}
+```
+
+### Event Store Structure
+
+```typescript
+// packages/domain/src/common/events/domain-event.ts
+export type DomainEvent = {
+  id: string;              // Unique event ID
+  streamId: string;        // Aggregate ID
+  type: string;            // Event type
+  version: number;         // Event version in stream (for concurrency)
+  created: string;         // ISO timestamp
+  payload: object;         // Business data
+  metadata: object;        // Contextual data (correlation IDs, etc.)
+  userId?: string;         // User who triggered (for multi-tenancy)
+  tenantId?: string;       // Tenant ID (for multi-tenancy)
+};
+```
+
+### Optimistic Concurrency Control
+
+Version numbers prevent concurrent modifications:
+
+```typescript
+// Repository checks version on save
+const expectedVersion = aggregate.baseVersion();
+const actualVersion = existingEvents.length;
+
+if (expectedVersion !== actualVersion) {
+  throw new ConcurrencyException(
+    `Expected version ${expectedVersion}, got ${actualVersion}`
+  );
+}
+```
+
+### Benefits
+
+1. **Complete Audit Trail**: Every change is recorded as an event
+2. **Time Travel**: Reconstruct aggregate state at any point in time
+3. **Event Replay**: Rebuild read models or fix bugs by replaying events
+4. **Temporal Queries**: Ask questions about the past ("Was this contact active in Q2?")
+5. **Integration**: Other systems can subscribe to event stream
+6. **Debugging**: See exact sequence of events that led to current state
 
 ---
 
@@ -852,7 +978,9 @@ export abstract class EventSourcedAggregate {
 - Make commands and queries immutable
 - Name events in past tense
 - Use value objects for domain concepts
-- Publish events from command handlers, not from domain entities (for now)
+- **Aggregates raise events** (domain layer), repositories enrich and persist them (infrastructure layer)
+- Keep command handlers simple - they orchestrate aggregates and repositories
+- Aggregates should not know about userId, tenantId, or other infrastructure concerns
 - Keep handlers focused (Single Responsibility Principle)
 - Use builders and mocks from testing package
 
