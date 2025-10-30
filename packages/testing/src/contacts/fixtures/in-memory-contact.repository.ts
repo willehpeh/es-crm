@@ -1,14 +1,9 @@
-import {
-  Contact,
-  ContactId,
-  ContactRepository,
-  DomainEvent,
-} from '@es-crm/domain';
+import { ContactId, ContactRepository, StoredEvent } from '@es-crm/domain';
 
 export class InMemoryContactRepository implements ContactRepository {
-  events: DomainEvent[] = [];
+  events: StoredEvent[] = [];
 
-  register(contact: Contact): ContactId {
+  async register(): Promise<ContactId> {
     return new ContactId();
   }
 }

@@ -15,7 +15,11 @@ describe('RegisterNewContact', () => {
   it('smoke test', async () => {
     repository = new InMemoryContactRepository();
     handler = new RegisterNewContactHandler(repository);
-    dto = {};
+    dto = {
+      firstName: 'John',
+      lastName: 'Doe',
+      source: 'website',
+    };
     command = new RegisterNewContact(dto);
 
     expect(await handler.execute(command)).toBeInstanceOf(ContactId);
