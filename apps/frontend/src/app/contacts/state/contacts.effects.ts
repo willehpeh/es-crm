@@ -12,8 +12,8 @@ export class ContactsEffects {
   loadContacts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ContactsActions.RegisterNewContact),
-      switchMap(({ firstName, lastName, source }) =>
-        this.contactsApi.registerNewContact({ firstName, lastName, source }).pipe(
+      switchMap(({ dto }) =>
+        this.contactsApi.registerNewContact(dto).pipe(
           map((res) => ContactsActions.RegisterNewContactSuccess(res)),
           catchError((error) =>
             of(ContactsActions.RegisterNewContactFailure({ error }))

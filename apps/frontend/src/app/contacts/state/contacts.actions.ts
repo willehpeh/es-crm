@@ -1,9 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 import { AppError } from '../../core/types/error';
+import { RegisterNewContactDto } from '../dtos/register-new-contact.dto';
 
 export const RegisterNewContact = createAction(
   '[New Contact Form] Register New Contact',
-  props<{ firstName: string, lastName: string, source: string }>()
+  props<{ dto: RegisterNewContactDto }>()
 );
 
 export const RegisterNewContactSuccess = createAction(
