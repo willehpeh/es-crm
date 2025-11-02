@@ -1,5 +1,5 @@
 import { Contact, ContactId } from '../index';
 
-export interface ContactRepository {
-  register(contact: Contact): Promise<ContactId>;
+export abstract class ContactRepository {
+  abstract register(contact: Contact): Promise<ContactId>;
 }

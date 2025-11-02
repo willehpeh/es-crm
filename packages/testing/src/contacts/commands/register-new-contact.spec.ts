@@ -1,4 +1,4 @@
-import { InMemoryContactRepository } from '../fixtures/in-memory-contact.repository';
+import { InMemoryContactRepository } from '@es-crm/infrastructure';
 import {
   RegisterNewContact,
   RegisterNewContactDto,
