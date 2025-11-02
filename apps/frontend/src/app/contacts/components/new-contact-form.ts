@@ -51,10 +51,27 @@ export class NewContactForm {
   });
 
   onRegisterContact(): void {
-    this.contactsFacade.registerNewContact({
+    if (this.formIsNotValid()) {
+      this.showInvalidFields();
+      return;
+    }
+    this.contactsFacade.registerNewContact(this.formValue());
+  }
+
+  private formValue() {
+    return {
       firstName: this.newContactForm.get('firstName')?.value || '',
       lastName: this.newContactForm.get('lastName')?.value || '',
       source: this.newContactForm.get('source')?.value || ''
-    });
+    };
+  }
+
+  private showInvalidFields() {
+    this.newContactForm.markAllAsTouched();
+    this.newContactForm.markAllAsDirty();
+  }
+
+  private formIsNotValid() {
+    return !this.newContactForm.valid;
   }
 }
