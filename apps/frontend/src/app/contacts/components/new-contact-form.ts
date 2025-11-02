@@ -3,10 +3,11 @@ import { Card } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-new-contact-form',
-  imports: [Card, FloatLabel, InputText, Select],
+  imports: [Card, FloatLabel, InputText, Select, Button],
   template: `
     <p-card header="New Contact">
       <p-floatlabel variant="in">
@@ -20,6 +21,9 @@ import { Select } from 'primeng/select';
       <p-floatlabel variant="in">
         <p-select />
       </p-floatlabel>
+      <ng-template #footer>
+        <p-button label="Register"/>
+      </ng-template>
     </p-card>
   `,
 })
