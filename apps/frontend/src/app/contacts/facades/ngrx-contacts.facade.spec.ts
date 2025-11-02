@@ -8,6 +8,7 @@ import { provideState, provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { ContactsEffects } from '../state/contacts.effects';
 import * as fromContacts from '../state/contacts.reducer';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('NgrxContactsFacade', () => {
   let facade: NgrxContactsFacade;
@@ -25,6 +26,7 @@ describe('NgrxContactsFacade', () => {
         ContactsApi,
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideZonelessChangeDetection(),
       ],
     });
     facade = TestBed.inject(NgrxContactsFacade);
