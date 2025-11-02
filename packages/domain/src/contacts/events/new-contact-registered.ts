@@ -1,5 +1,9 @@
-import { ContactId } from '../value-objects';
-import { ContactSource, FirstName, LastName } from '../entities';
+import {
+  ContactId,
+  ContactSource,
+  FirstName,
+  LastName,
+} from '../value-objects';
 
 export type NewContactRegistered = {
   payload: {

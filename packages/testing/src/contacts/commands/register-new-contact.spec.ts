@@ -6,9 +6,6 @@ import {
 } from '@es-crm/application';
 import {
   ContactId,
-  ContactSource,
-  FirstName,
-  LastName,
   NewContactRegistered,
 } from '@es-crm/domain';
 
