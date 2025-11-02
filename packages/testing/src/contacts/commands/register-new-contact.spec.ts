@@ -28,7 +28,7 @@ describe('RegisterNewContact', () => {
     };
     command = new RegisterNewContact(dto);
 
-    const id = await handler.execute(command);
+    await handler.execute(command);
 
     expect(repository.events.length).toBe(1);
     const event = repository.events[0] as NewContactRegistered;
@@ -41,6 +41,20 @@ describe('RegisterNewContact', () => {
         source: new ContactSource(dto.source),
       }
     });
-    expect(id).toEqual(event.payload.contactId);
+  })
+
+  it('should return the new contact id', async () => {
+    repository = new InMemoryContactRepository();
+    handler = new RegisterNewContactHandler(repository);
+    dto = {
+      firstName: 'John',
+      lastName: 'Doe',
+      source: 'LinkedIn'
+    };
+    command = new RegisterNewContact(dto);
+
+    const id = await handler.execute(command);
+
+    expect(id).toEqual({ id: command.id.value() });
   });
 });

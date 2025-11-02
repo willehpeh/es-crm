@@ -2,7 +2,7 @@ import { Command } from '@nestjs/cqrs';
 import { ContactId, ContactSource, FirstName, LastName } from '@es-crm/domain';
 import { RegisterNewContactDto } from './register-new-contact.dto';
 
-export class RegisterNewContact extends Command<ContactId> {
+export class RegisterNewContact extends Command<{ id: string }> {
   firstName: FirstName;
   lastName: LastName;
   id: ContactId;
