@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "strict": true,
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -10,26 +11,15 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@es-crm/domain": [
-        "packages/domain/src/index.ts"
-      ],
-      "@es-crm/application": [
-        "packages/application/src/index.ts"
-      ],
-      "@es-crm/infrastructure": [
-        "packages/infrastructure/src/index.ts"
-      ],
-      "@es-crm/testing": [
-        "packages/testing/src/index.ts"
-      ]
+      "@es-crm/domain": ["packages/domain/src/index.ts"],
+      "@es-crm/application": ["packages/application/src/index.ts"],
+      "@es-crm/infrastructure": ["packages/infrastructure/src/index.ts"],
+      "@es-crm/testing": ["packages/testing/src/index.ts"]
     }
   },
   "exclude": [
