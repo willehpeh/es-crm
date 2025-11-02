@@ -1,14 +1,13 @@
 import { NgrxContactsFacade } from './ngrx-contacts.facade';
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { HttpTestingController } from '@angular/common/http/testing';
 import { ContactsApi } from '../services/contacts.api';
-import { provideState, provideStore } from '@ngrx/store';
+import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { ContactsEffects } from '../state/contacts.effects';
 import * as fromContacts from '../state/contacts.reducer';
-import { provideZonelessChangeDetection } from '@angular/core';
+import { provideFacadeTest } from '../../core/providers/facade-test.providers';
 
 describe('NgrxContactsFacade', () => {
   let facade: NgrxContactsFacade;
@@ -17,16 +16,13 @@ describe('NgrxContactsFacade', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideStore(),
+        provideFacadeTest(),
         provideEffects([
           ContactsEffects,
         ]),
         provideState(fromContacts.featureKey, fromContacts.reducer),
         NgrxContactsFacade,
         ContactsApi,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideZonelessChangeDetection(),
       ],
     });
     facade = TestBed.inject(NgrxContactsFacade);
