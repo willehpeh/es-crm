@@ -12,6 +12,7 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
+  "neverConnectToCloud": true,
   "targetDefaults": {
     "@angular/build:application": {
       "cache": true,
