@@ -1,9 +1,8 @@
 import { Command } from '@nestjs/cqrs';
-import { ContactId } from '@es-crm/domain';
+import { ContactId, ContactSource, FirstName, LastName } from '@es-crm/domain';
 import { RegisterNewContactDto } from './register-new-contact.dto';
 
 export class RegisterNewContact extends Command<ContactId> {
-
   firstName: FirstName;
   lastName: LastName;
   id: ContactId;
