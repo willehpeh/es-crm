@@ -1,1 +1,5 @@
-export class RegisterNewContactDto {}
+export type RegisterNewContactDto = {
+  firstName: string;
+  lastName: string;
+  source: string;
+};
