@@ -7,6 +7,9 @@ import {
 import {
   ContactId,
   NewContactRegistered,
+  FirstName,
+  LastName,
+  ContactSource,
 } from '@es-crm/domain';
 
 describe('RegisterNewContact', () => {
