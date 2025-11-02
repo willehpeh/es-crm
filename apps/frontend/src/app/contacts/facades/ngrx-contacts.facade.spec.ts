@@ -4,6 +4,10 @@ import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { ContactsApi } from '../services/contacts.api';
+import { provideState, provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { ContactsEffects } from '../state/contacts.effects';
+import * as fromContacts from '../state/contacts.reducer';
 
 describe('NgrxContactsFacade', () => {
   let facade: NgrxContactsFacade;
@@ -12,10 +16,15 @@ describe('NgrxContactsFacade', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideStore(),
+        provideEffects([
+          ContactsEffects,
+        ]),
+        provideState(fromContacts.featureKey, fromContacts.reducer),
         NgrxContactsFacade,
         ContactsApi,
         provideHttpClient(),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
       ],
     });
     facade = TestBed.inject(NgrxContactsFacade);

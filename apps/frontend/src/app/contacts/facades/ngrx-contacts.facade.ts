@@ -1,15 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { ContactsFacade } from './contacts.facade';
-import { HttpClient } from '@angular/common/http';
-import { ContactsApi } from '../services/contacts.api';
+import { Store } from '@ngrx/store';
+import * as ContactsActions from '../state/contacts.actions';
 
 @Injectable()
 export class NgrxContactsFacade implements ContactsFacade {
+  private store = inject(Store);
 
-  private contacts = inject(ContactsApi);
-
-  registerNewContact(props: { firstName: string; lastName: string; source: string }): void {
-    this.contacts.registerNewContact(props).subscribe();
+  registerNewContact(props: {
+    firstName: string;
+    lastName: string;
+    source: string;
+  }): void {
+    this.store.dispatch(ContactsActions.RegisterNewContact(props));
   }
-
 }
