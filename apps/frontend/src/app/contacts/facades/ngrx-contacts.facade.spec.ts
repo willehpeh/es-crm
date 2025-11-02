@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { ContactsApi } from '../services/contacts.api';
 
 describe('NgrxContactsFacade', () => {
   let facade: NgrxContactsFacade;
@@ -12,6 +13,7 @@ describe('NgrxContactsFacade', () => {
     TestBed.configureTestingModule({
       providers: [
         NgrxContactsFacade,
+        ContactsApi,
         provideHttpClient(),
         provideHttpClientTesting()
       ],
