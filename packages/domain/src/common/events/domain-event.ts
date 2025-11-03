@@ -6,9 +6,10 @@ export type DomainEvent = {
 export type StoredEvent = DomainEvent & {
   id: string;
   streamId: string;
-  version: number;
   created: string;
   metadata: object;
+  streamPosition: number;
+  version?: number;
   tenantId?: string;
   userId?: string;
   correlationId?: string;

@@ -1,1 +1,1 @@
-export * from './in-memory-contact.repository';
+export * from './in-memory.contact.repository';
