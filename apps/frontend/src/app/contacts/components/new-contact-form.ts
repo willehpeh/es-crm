@@ -18,18 +18,32 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
     ReactiveFormsModule
   ],
   template: `
-    <p-card header="New Contact">
+    <p-card header="New Contact" class="max-w-screen-sm mx-auto">
       <form [formGroup]="newContactForm">
-        <p-floatlabel variant="in">
-          <input type="text" pInputText id="first-name" formControlName="firstName" />
+        <p-floatlabel variant="in" class="w-2/3 mb-3">
+          <input type="text" 
+                 pInputText 
+                 id="first-name" 
+                 formControlName="firstName" 
+                 class="w-full m-auto"
+          />
           <label for="first-name">First Name</label>
         </p-floatlabel>
-        <p-floatlabel variant="in">
-          <input type="text" pInputText id="last-name" formControlName="lastName" />
+        <p-floatlabel variant="in" class="w-2/3 mb-3">
+          <input type="text" 
+                 pInputText 
+                 id="last-name" 
+                 formControlName="lastName" 
+                 class="w-full m-auto"
+          />
           <label for="last-name">Last Name</label>
         </p-floatlabel>
-        <p-floatlabel variant="in">
-          <p-select formControlName="source" [editable]="true" id="source"/>
+        <p-floatlabel variant="in" class="w-2/3 mb-3">
+          <p-select formControlName="source" 
+                    [editable]="true" 
+                    id="source"
+                    class="w-full m-auto"
+          />
           <label for="source">Source</label>
         </p-floatlabel>
       </form>
