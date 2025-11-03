@@ -10,7 +10,6 @@ export class RegisterNewContactHandler
 
   async execute(command: RegisterNewContact): Promise<{ id: string }> {
     const contact = new Contact(command);
-    const contactId = await this.contacts.register(contact);
-    return { id: contactId.value() };
+    return this.contacts.register(contact);
   }
 }

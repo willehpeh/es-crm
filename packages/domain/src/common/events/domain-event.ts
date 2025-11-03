@@ -14,4 +14,4 @@ export type StoredEvent = DomainEvent & {
   userId?: string;
   correlationId?: string;
   causationId?: string;
-}
+};

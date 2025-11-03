@@ -19,7 +19,8 @@ export class JsonlEventStore implements EventStore {
     if (eventOrEvents instanceof Array) {
       const eventsAsString = eventOrEvents.reduce((acc, event) => acc + JSON.stringify(event) + '\n', '');
       await this.fileHandle.write(eventsAsString);
+      return;
     }
-    await this.fileHandle.write(JSON.stringify(eventOrEvents + '\n'));
+    await this.fileHandle.write(JSON.stringify(eventOrEvents) + '\n');
   }
 }

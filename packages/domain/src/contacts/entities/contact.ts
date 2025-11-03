@@ -19,10 +19,10 @@ export class Contact extends Aggregate {
     super();
     const newContactRegistered: NewContactRegistered = {
       payload: {
-        contactId: props.id,
-        firstName: props.firstName,
-        lastName: props.lastName,
-        source: props.source,
+        contactId: props.id.value(),
+        firstName: props.firstName.value(),
+        lastName: props.lastName.value(),
+        source: props.source.value(),
       },
       type: 'NewContactRegistered',
     };

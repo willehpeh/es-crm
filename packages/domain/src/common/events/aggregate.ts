@@ -27,7 +27,7 @@ export abstract class Aggregate {
   protected loadFromHistory(events: StoredEvent[]): void {
     events.forEach((event) => {
       this.apply({ type: event.type, payload: event.payload });
-      this._version = event.version;
+      this._version = event.streamPosition;
     });
   }
 }

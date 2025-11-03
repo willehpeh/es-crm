@@ -1,5 +1,5 @@
-import { Contact, ContactId } from '../index';
+import { Contact } from '../index';
 
 export abstract class ContactRepository {
-  abstract register(contact: Contact): Promise<ContactId>;
+  abstract register(contact: Contact): Promise<{ id: string }>;
 }
