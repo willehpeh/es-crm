@@ -1,4 +1,4 @@
-import { Contact, ContactId, ContactRepository, DomainEvent, NewContactRegistered, StoredEvent } from '@es-crm/domain';
+import { Contact, ContactId, ContactRepository, DomainEvent, StoredEvent } from '@es-crm/domain';
 import { Injectable } from '@nestjs/common';
 import { EventStore } from '../event-store';
 
@@ -8,8 +8,8 @@ export class EventStoreContactRepository implements ContactRepository {
   constructor(private readonly eventStore: EventStore) {}
 
   async register(contact: Contact, contactId: ContactId): Promise<{ id: string }> {
-    const events = contact.uncommittedEvents();
-    await this.eventStore.append(this.enrichEvents(events, contactId.value(), 0));
+    const eventsToStore = this.enrichEvents(contact.uncommittedEvents(), contactId.value(), 0);
+    await this.eventStore.append(eventsToStore);
     return { id: contactId.value() };
   }
 
@@ -25,7 +25,7 @@ export class EventStoreContactRepository implements ContactRepository {
     };
   }
 
-  private enrichEvents(events: DomainEvent[], streamId: string, startingFromPosition: number): StoredEvent[] {
-    return events.map((event, index) => this.enrichEvent(event, streamId, startingFromPosition + index));
+  private enrichEvents(events: DomainEvent[], streamId: string, expectedStartPosition: number): StoredEvent[] {
+    return events.map((event, index) => this.enrichEvent(event, streamId, expectedStartPosition + index));
   }
 }

@@ -5,11 +5,7 @@ import { EventStore, JsonlEventStore } from '@es-crm/infrastructure';
   providers: [
     {
       provide: EventStore,
-      useFactory: async () => {
-        const store = new JsonlEventStore();
-        await store.init();
-        return store;
-      }
+      useClass: JsonlEventStore,
     },
   ],
   exports: [
