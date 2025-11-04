@@ -1,4 +1,4 @@
-import { StoredEvent } from '@es-crm/domain';
+import { StoredEvent } from './stored-event';
 
 export abstract class EventStore {
   abstract append(eventOrEvents: StoredEvent | StoredEvent[]): Promise<void>;

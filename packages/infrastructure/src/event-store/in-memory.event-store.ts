@@ -1,5 +1,6 @@
 import { EventStore } from './event-store';
-import { StoredEvent } from '@es-crm/domain';
+
+import { StoredEvent } from './stored-event';
 
 export class InMemoryEventStore implements EventStore {
 

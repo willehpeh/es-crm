@@ -1,6 +1,6 @@
-import { Contact, ContactId, ContactRepository, DomainEvent, StoredEvent } from '@es-crm/domain';
+import { Contact, ContactId, ContactRepository, DomainEvent } from '@es-crm/domain';
 import { Injectable } from '@nestjs/common';
-import { EventStore } from '../event-store';
+import { EventStore, StoredEvent } from '../event-store';
 
 @Injectable()
 export class EventStoreContactRepository implements ContactRepository {

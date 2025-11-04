@@ -1,6 +1,6 @@
 import { EventStore } from './event-store';
-import { StoredEvent } from '@es-crm/domain';
 import * as fs from 'fs/promises';
+import { StoredEvent } from './stored-event';
 
 export class JsonlEventStore implements EventStore {
 
