@@ -1,16 +1,6 @@
 import { InMemoryContactRepository } from '@es-crm/infrastructure';
-import {
-  RegisterNewContact,
-  RegisterNewContactDto,
-  RegisterNewContactHandler,
-} from '@es-crm/application';
-import {
-  ContactId,
-  NewContactRegistered,
-  FirstName,
-  LastName,
-  ContactSource,
-} from '@es-crm/domain';
+import { RegisterNewContact, RegisterNewContactDto, RegisterNewContactHandler } from '@es-crm/application';
+import { NewContactRegistered } from '@es-crm/domain';
 
 describe('RegisterNewContact', () => {
   let command: RegisterNewContact;
@@ -35,10 +25,10 @@ describe('RegisterNewContact', () => {
     expect(event).toEqual({
       type: 'NewContactRegistered',
       payload: {
-        contactId: expect.any(ContactId),
-        firstName: new FirstName(dto.firstName),
-        lastName: new LastName(dto.lastName),
-        source: new ContactSource(dto.source),
+        contactId: command.id.value(),
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        source: dto.source,
       }
     });
   })
