@@ -1,4 +1,4 @@
-import { DomainEvent, StoredEvent } from './domain-event';
+import { DomainEvent } from './domain-event';
 
 export abstract class Aggregate {
   private _version = 0;
@@ -24,10 +24,11 @@ export abstract class Aggregate {
     this._uncommittedEvents = [];
   }
 
-  protected loadFromHistory(events: StoredEvent[]): void {
+  protected loadFromHistory(events: DomainEvent[]): void {
+    this._version = 0;
     events.forEach((event) => {
-      this.apply({ type: event.type, payload: event.payload });
-      this._version = event.streamPosition;
+      this.apply(event);
+      this._version++;
     });
   }
 }
