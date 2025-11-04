@@ -4,8 +4,10 @@ import { StoredEvent } from './stored-event';
 
 export class JsonlEventStore implements EventStore {
 
+  constructor(private readonly _targetFile = 'events.jsonl') {}
+
   async append(eventOrEvents: StoredEvent | StoredEvent[]): Promise<void> {
-    await fs.appendFile('events.jsonl', this.stringify(eventOrEvents));
+    await fs.appendFile(this._targetFile, this.stringify(eventOrEvents));
   }
 
   private stringify(eventOrEvents: StoredEvent | StoredEvent[]) {
