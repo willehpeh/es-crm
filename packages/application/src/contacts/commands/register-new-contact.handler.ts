@@ -9,7 +9,7 @@ export class RegisterNewContactHandler
   constructor(private readonly contacts: ContactRepository) {}
 
   async execute(command: RegisterNewContact): Promise<{ id: string }> {
-    const contact = new Contact(command);
-    return this.contacts.register(contact);
+    const contact = Contact.registerNew(command);
+    return this.contacts.register(contact, command.id);
   }
 }

@@ -47,4 +47,16 @@ describe('RegisterNewContact', () => {
 
     expect(id).toEqual({ id: command.id.value() });
   });
+
+  it('should be the first event in the stream', async () => {
+    dto = {
+      firstName: 'John',
+      lastName: 'Doe',
+      source: 'LinkedIn'
+    };
+    command = new RegisterNewContact(dto);
+    await handler.execute(command);
+    const event = eventStore.events[0];
+    expect(event.streamPosition).toBe(0);
+  })
 });
